@@ -1,41 +1,62 @@
-import express from 'express'
-import { v4 as uuidv4 } from 'uuid'
+import express from "express";
+import { v4 as uuidv4 } from "uuid";
 
-const router = express.Router()
-let users = []
-router.get('/', (req, res) => {
-  res.send(users)
-})
+const router = express.Router();
+let users = [];
+router.get("/", (req, res) => {
+    res.send(users);
+});
 
-router.post('/', (req, res) => {
-  const user = req.body
+router.post("/", (req, res) => {
+    const user = req.body;
 
-  // const userWithId = { ...user, id: uuidv4() };
+    // const userWithId = { ...user, id: uuidv4() };
 
-  users.push({
-    ...user,
-    id: uuidv4(),
-  })
+    users.push({
+        ...user,
+        id: uuidv4(),
+    });
 
-  // users.push(user);
+    // users.push(user);
 
-  res.send(`User with the name ${user.firstName} added to the database!`)
-})
+    res.send(`User with the name ${user.firstName} added to the database!`);
+});
 
 //  /users/2 => req.params {id:2}
 
-router.get('/:id', (req, res) => {
-  const { id } = req.params
+router.get("/:id", (req, res) => {
+    const { id } = req.params;
 
-  const findUser = users.find((user) => user.id == id)
-  res.send(findUser)
-})
+    const findUser = users.find((user) => user.id == id);
+    res.send(findUser);
+});
 
-router.delete('/:id', (req, res) => {
-  const { id } = req.params
-  users = users.filter((user) => user.id != id)
+// Delete User Data using delete() method
 
-  res.send(`User with id ${id} is deleted from the database.`)
-})
+router.delete("/:id", (req, res) => {
+    const { id } = req.params;
+    users = users.filter((user) => user.id != id);
 
-export default router
+    res.send(`User with id ${id} is deleted from the database.`);
+});
+
+// Update User Data Using patch() method
+
+router.patch("/:id", (req, res) => {
+    const { id } = req.params;
+    const { firstName, lastName, age } = req.body;
+    const user = users.find(() => user.id == id);
+    if (firstName) {
+        user.firstName = firstName;
+    }
+    if (lastName) {
+        user.lastName = lastName;
+    }
+    if (age) {
+        user.age = age;
+    }
+
+    res.send(`User with the id ${id} has been updated.`);
+});
+
+export default router;
